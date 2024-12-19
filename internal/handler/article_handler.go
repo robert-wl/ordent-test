@@ -25,11 +25,26 @@ func NewArticleHandler(s service.ArticleService) *ArticleHandler {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Param search query string false "Search"
 // @Success 200 {array} model.Article
 // @Failure 400 {object} utils.ErrorResponse
 // @Router /articles [get]
 func (h *ArticleHandler) GetArticles(ctx *gin.Context) {
-	articles, err := h.articleService.GetArticles()
+	var req dto.GetArticleRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
+		)
+	}
+
+	articles, err := h.articleService.GetArticles(&req)
 
 	if err != nil {
 		ctx.JSON(

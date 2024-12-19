@@ -143,6 +143,19 @@ paths:
       consumes:
       - application/json
       description: Get all articles
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

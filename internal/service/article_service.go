@@ -5,10 +5,11 @@ import (
 	"ordent-test/internal/domain/model"
 	"ordent-test/internal/dto"
 	"ordent-test/internal/infrastructure/repository"
+	"ordent-test/pkg/pagination"
 )
 
 type ArticleService interface {
-	GetArticles() ([]*model.Article, error)
+	GetArticles(dto *dto.GetArticleRequest) ([]*model.Article, error)
 	GetArticle(articleId string) (*model.Article, error)
 	CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error)
 	UpdateArticle(user *model.User, articleId string, dto *dto.UpdateArticleRequest) (*model.Article, error)
@@ -25,8 +26,16 @@ func NewArticleService(r repository.ArticleRepository) ArticleService {
 	}
 }
 
-func (s *articleService) GetArticles() ([]*model.Article, error) {
-	articles, err := s.repo.FindAll()
+func (s *articleService) GetArticles(dto *dto.GetArticleRequest) ([]*model.Article, error) {
+	if dto.Search == nil {
+		dto.Search = new(string)
+	}
+
+	if dto.Pagination == nil {
+		dto.Pagination = new(pagination.Pagination)
+	}
+
+	articles, err := s.repo.Find(dto.Search, dto.Pagination)
 
 	if err != nil {
 		return nil, err

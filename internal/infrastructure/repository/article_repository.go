@@ -3,10 +3,11 @@ package repository
 import (
 	"gorm.io/gorm"
 	"ordent-test/internal/domain/model"
+	"ordent-test/pkg/pagination"
 )
 
 type ArticleRepository interface {
-	FindAll() ([]*model.Article, error)
+	Find(search *string, pagination *pagination.Pagination) ([]*model.Article, error)
 	FindBySecureID(secureID string) (*model.Article, error)
 	Create(article *model.Article) (*model.Article, error)
 	Update(article *model.Article) (*model.Article, error)
@@ -23,10 +24,15 @@ func NewArticleRepository(db *gorm.DB) ArticleRepository {
 	}
 }
 
-func (r *articleRepository) FindAll() ([]*model.Article, error) {
+func (r *articleRepository) Find(search *string, pagination *pagination.Pagination) ([]*model.Article, error) {
 	var articles []*model.Article
 
-	err := r.db.Preload("User").Find(&articles).Error
+	err := r.db.
+		Scopes(pagination.Paginate()).
+		Where("title LIKE ?", "%"+*search+"%").
+		Where("body LIKE ?", "%"+*search+"%").
+		Preload("User").
+		Find(&articles).Error
 
 	if err != nil {
 		return nil, err

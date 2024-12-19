@@ -2,10 +2,12 @@ package service
 
 import (
 	"fmt"
+	"net/http"
 	"ordent-test/internal/domain/model"
 	"ordent-test/internal/dto"
 	"ordent-test/internal/infrastructure/repository"
 	"ordent-test/pkg/pagination"
+	"ordent-test/pkg/utils"
 )
 
 type ArticleService interface {
@@ -38,7 +40,11 @@ func (s *articleService) GetArticles(dto *dto.GetArticleRequest) ([]*model.Artic
 	articles, err := s.repo.Find(dto.Search, dto.Pagination)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusInternalServerError,
+			"Failed to get articles",
+		)
 	}
 
 	return articles, nil
@@ -48,7 +54,11 @@ func (s *articleService) GetArticle(articleId string) (*model.Article, error) {
 	article, err := s.repo.FindBySecureID(articleId)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusNotFound,
+			"Article not found",
+		)
 	}
 
 	return article, nil
@@ -64,7 +74,11 @@ func (s *articleService) CreateArticle(user *model.User, dto *dto.CreateArticleR
 	createdArticle, err := s.repo.Create(article)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusInternalServerError,
+			"Failed to create article",
+		)
 	}
 
 	return createdArticle, nil
@@ -74,11 +88,19 @@ func (s *articleService) UpdateArticle(user *model.User, articleId string, dto *
 	article, err := s.repo.FindBySecureID(articleId)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusNotFound,
+			"Article not found",
+		)
 	}
 
 	if !user.IsAdmin() && article.UserID != user.ID {
-		return nil, fmt.Errorf("unauthorized")
+		return nil, utils.NewAppError(
+			fmt.Errorf("unauthorized"),
+			http.StatusForbidden,
+			"Unauthorized",
+		)
 	}
 
 	article.Title = dto.Title
@@ -87,7 +109,11 @@ func (s *articleService) UpdateArticle(user *model.User, articleId string, dto *
 	updatedArticle, err := s.repo.Update(article)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusInternalServerError,
+			"Failed to update article",
+		)
 	}
 
 	return updatedArticle, nil
@@ -97,15 +123,27 @@ func (s *articleService) DeleteArticle(user *model.User, articleId string) error
 	article, err := s.repo.FindBySecureID(articleId)
 
 	if err != nil {
-		return err
+		return utils.NewAppError(
+			err,
+			http.StatusNotFound,
+			"Article not found",
+		)
 	}
 
 	if !user.IsAdmin() && article.UserID != user.ID {
-		return fmt.Errorf("unauthorized")
+		return utils.NewAppError(
+			fmt.Errorf("unauthorized"),
+			http.StatusForbidden,
+			"Unauthorized",
+		)
 	}
 
 	if err := s.repo.Delete(article); err != nil {
-		return err
+		return utils.NewAppError(
+			err,
+			http.StatusInternalServerError,
+			"Failed to delete article",
+		)
 	}
 
 	return nil

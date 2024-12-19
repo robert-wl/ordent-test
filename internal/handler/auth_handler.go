@@ -32,26 +32,14 @@ func (h *AuthHandler) LogIn(ctx *gin.Context) {
 	var req dto.LogInRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
 	token, err := h.authService.LogIn(&req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Unauthorized",
-				http.StatusUnauthorized,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -73,26 +61,14 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	var req dto.RegisterRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
 	user, err := h.authService.Register(&req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 

@@ -35,25 +35,14 @@ func (h *ArticleHandler) GetArticles(ctx *gin.Context) {
 	var req dto.GetArticleRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
+		return
 	}
 
 	articles, err := h.articleService.GetArticles(&req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -76,13 +65,7 @@ func (h *ArticleHandler) GetArticle(ctx *gin.Context) {
 	article, err := h.articleService.GetArticle(articleId)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -103,13 +86,7 @@ func (h *ArticleHandler) CreateArticle(ctx *gin.Context) {
 	var req dto.CreateArticleRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -118,13 +95,7 @@ func (h *ArticleHandler) CreateArticle(ctx *gin.Context) {
 	article, err := h.articleService.CreateArticle(user, &req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -146,13 +117,7 @@ func (h *ArticleHandler) UpdateArticle(ctx *gin.Context) {
 	var req dto.UpdateArticleRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -162,13 +127,7 @@ func (h *ArticleHandler) UpdateArticle(ctx *gin.Context) {
 	article, err := h.articleService.UpdateArticle(user, articleId, &req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -192,13 +151,7 @@ func (h *ArticleHandler) DeleteArticle(ctx *gin.Context) {
 	err := h.articleService.DeleteArticle(user, articleId)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()),
-		)
+		utils.SendError(ctx, err)
 		return
 	}
 

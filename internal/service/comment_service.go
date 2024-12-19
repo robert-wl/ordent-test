@@ -2,10 +2,12 @@ package service
 
 import (
 	"fmt"
+	"net/http"
 	"ordent-test/internal/domain/model"
 	"ordent-test/internal/dto"
 	"ordent-test/internal/infrastructure/repository"
 	"ordent-test/pkg/pagination"
+	"ordent-test/pkg/utils"
 )
 
 type CommentService interface {
@@ -36,7 +38,11 @@ func (s *commentService) GetArticleComments(articleID string, dto *dto.GetArticl
 	article, err := s.articleRepo.FindBySecureID(articleID)
 
 	if err != nil {
-		return nil, fmt.Errorf("article with id %s not found", articleID)
+		return nil, utils.NewAppError(
+			fmt.Errorf("article with id %s not found", articleID),
+			http.StatusNotFound,
+			"Article not found",
+		)
 	}
 
 	if dto.Search == nil {
@@ -52,7 +58,11 @@ func (s *commentService) GetArticleComments(articleID string, dto *dto.GetArticl
 
 func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error) {
 	if dto.ArticleID == nil && dto.ParentID == nil {
-		return nil, fmt.Errorf("either article or parent comment is required")
+		return nil, utils.NewAppError(
+			fmt.Errorf("article_id or parent_id is required"),
+			http.StatusBadRequest,
+			"Bad Request",
+		)
 	}
 
 	var article *uint
@@ -62,7 +72,11 @@ func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentR
 		fArticle, err := s.articleRepo.FindBySecureID(*dto.ArticleID)
 
 		if err != nil {
-			return nil, fmt.Errorf("article with id %s not found", *dto.ArticleID)
+			return nil, utils.NewAppError(
+				fmt.Errorf("article with id %s not found", *dto.ArticleID),
+				http.StatusNotFound,
+				"Article not found",
+			)
 		}
 
 		article = &fArticle.ID
@@ -72,7 +86,11 @@ func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentR
 		fParent, err := s.commentRepo.FindBySecureID(*dto.ParentID)
 
 		if err != nil {
-			return nil, fmt.Errorf("parent comment with id %s not found", *dto.ParentID)
+			return nil, utils.NewAppError(
+				fmt.Errorf("parent comment with id %s not found", *dto.ParentID),
+				http.StatusNotFound,
+				"Parent comment not found",
+			)
 		}
 
 		parent = &fParent.ID
@@ -93,11 +111,19 @@ func (s *commentService) UpdateComment(user *model.User, commentID string, dto *
 	comment, err := s.commentRepo.FindBySecureID(commentID)
 
 	if err != nil {
-		return nil, fmt.Errorf("comment with id %s not found", commentID)
+		return nil, utils.NewAppError(
+			fmt.Errorf("comment with id %s not found", commentID),
+			http.StatusNotFound,
+			"Comment not found",
+		)
 	}
 
 	if !user.IsAdmin() && comment.UserID != user.ID {
-		return nil, fmt.Errorf("unauthorized to update comment")
+		return nil, utils.NewAppError(
+			fmt.Errorf("unauthorized to update comment"),
+			http.StatusForbidden,
+			"Unauthorized",
+		)
 	}
 
 	comment.Title = dto.Title
@@ -110,11 +136,19 @@ func (s *commentService) DeleteComment(user *model.User, commentID string) error
 	comment, err := s.commentRepo.FindBySecureID(commentID)
 
 	if err != nil {
-		return fmt.Errorf("comment with id %s not found", commentID)
+		return utils.NewAppError(
+			fmt.Errorf("comment with id %s not found", commentID),
+			http.StatusNotFound,
+			"Comment not found",
+		)
 	}
 
 	if !user.IsAdmin() && comment.UserID != user.ID {
-		return fmt.Errorf("unauthorized to delete comment")
+		return utils.NewAppError(
+			fmt.Errorf("unauthorized to delete comment"),
+			http.StatusForbidden,
+			"Unauthorized",
+		)
 	}
 
 	return s.commentRepo.Delete(comment)

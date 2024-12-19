@@ -34,24 +34,14 @@ func (h *UserHandler) GetUsers(ctx *gin.Context) {
 	var req dto.GetUserRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
 	users, err := h.userService.GetUsers(&req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -74,24 +64,14 @@ func (h *UserHandler) GetAdmins(ctx *gin.Context) {
 	var req dto.GetAdminRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
 	users, err := h.userService.GetAdmins(&req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -114,12 +94,7 @@ func (h *UserHandler) GetUser(ctx *gin.Context) {
 	user, err := h.userService.GetUser(userId)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -142,12 +117,7 @@ func (h *UserHandler) PromoteUser(ctx *gin.Context) {
 	user, err := h.userService.ChangeRole(userId, "admin")
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -170,12 +140,7 @@ func (h *UserHandler) DemoteUser(ctx *gin.Context) {
 	user, err := h.userService.ChangeRole(userId, "user")
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 

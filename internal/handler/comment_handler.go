@@ -147,12 +147,7 @@ func (h *CommentHandler) DeleteComment(ctx *gin.Context) {
 	err := h.commentService.DeleteComment(user, commentId)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -174,12 +169,7 @@ func (h *CommentHandler) UpdateComment(ctx *gin.Context) {
 	var req dto.UpdateCommentRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 
@@ -189,12 +179,7 @@ func (h *CommentHandler) UpdateComment(ctx *gin.Context) {
 	comment, err := h.commentService.UpdateComment(user, commentId, &req)
 
 	if err != nil {
-		ctx.JSON(
-			http.StatusBadRequest,
-			utils.NewErrorResponse(
-				"Bad Request",
-				http.StatusBadRequest,
-				err.Error()))
+		utils.SendError(ctx, err)
 		return
 	}
 

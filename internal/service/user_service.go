@@ -1,10 +1,12 @@
 package service
 
 import (
+	"net/http"
 	"ordent-test/internal/domain/model"
 	"ordent-test/internal/dto"
 	"ordent-test/internal/infrastructure/repository"
 	"ordent-test/pkg/pagination"
+	"ordent-test/pkg/utils"
 )
 
 type UserService interface {
@@ -56,7 +58,11 @@ func (s *userService) ChangeRole(secureID string, role string) (*model.User, err
 	user, err := s.repo.FindBySecureID(secureID)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.NewAppError(
+			err,
+			http.StatusNotFound,
+			"Failed to find user",
+		)
 	}
 
 	user.Role = role

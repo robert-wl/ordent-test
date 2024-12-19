@@ -20,10 +20,12 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	commentRepo := repository.NewCommentRepository(db)
 
 	authService := service.NewAuthService(userRepo)
+	userService := service.NewUserService(userRepo)
 	articleService := service.NewArticleService(articleRepo)
 	commentService := service.NewCommentService(commentRepo, articleRepo)
 
 	authHandler := handler.NewAuthHandler(authService)
+	userHandler := handler.NewUserHandler(userService)
 	articleHandler := handler.NewArticleHandler(articleService)
 	commentHandler := handler.NewCommentHandler(commentService)
 
@@ -45,6 +47,12 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 			auth.POST("/register", authHandler.Register)
 
 			auth.GET("/me", authMiddleware, authHandler.Me)
+		}
+
+		users := v1.Group("/users")
+		users.Use(authMiddleware)
+		{
+			users.GET("", userHandler.GetUsers)
 		}
 
 		articles := v1.Group("/articles")

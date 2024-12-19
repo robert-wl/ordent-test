@@ -111,6 +111,8 @@ definitions:
         type: string
       email:
         type: string
+      role:
+        type: string
       secure_id:
         type: string
       updated_at:
@@ -469,6 +471,41 @@ paths:
       - BearerAuth: []
       tags:
       - comments
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get users
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - users
 securityDefinitions:
   BearerAuth:
     in: header

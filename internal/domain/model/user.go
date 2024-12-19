@@ -11,7 +11,7 @@ type User struct {
 	SecureID  string    `json:"secure_id" gorm:"type:char(36);uniqueIndex;not null"`
 	Username  string    `json:"username" gorm:"uniqueIndex;not null"`
 	Email     string    `json:"email" gorm:"uniqueIndex;not null"`
-	Password  string    `json:"password" gorm:"not null"`
+	Password  string    `json:"-" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`
 }

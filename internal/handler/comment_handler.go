@@ -93,6 +93,9 @@ func (h *CommentHandler) GetComment(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Param search query string false "Search"
 // @Param id path string true "Article ID"
 // @Success 200 {array} model.Comment
 // @Failure 400 {object} utils.ErrorResponse
@@ -100,7 +103,19 @@ func (h *CommentHandler) GetComment(ctx *gin.Context) {
 func (h *CommentHandler) GetCommentsByArticle(ctx *gin.Context) {
 	articleId := ctx.Param("id")
 
-	comments, err := h.commentService.GetCommentsByArticleSecureID(articleId)
+	var req dto.GetArticleCommentRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	comments, err := h.commentService.GetArticleComments(articleId, &req)
 
 	if err != nil {
 		ctx.JSON(

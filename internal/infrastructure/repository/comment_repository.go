@@ -3,11 +3,12 @@ package repository
 import (
 	"gorm.io/gorm"
 	"ordent-test/internal/domain/model"
+	"ordent-test/pkg/pagination"
 )
 
 type CommentRepository interface {
 	FindBySecureID(secureID string) (*model.Comment, error)
-	FindByArticleID(articleID uint) ([]*model.Comment, error)
+	FindByArticleID(articleID uint, search *string, pagination *pagination.Pagination) ([]*model.Comment, error)
 	Create(comment *model.Comment) (*model.Comment, error)
 	Update(comment *model.Comment) (*model.Comment, error)
 	Delete(comment *model.Comment) error
@@ -38,10 +39,13 @@ func (r *commentRepository) FindBySecureID(secureID string) (*model.Comment, err
 	return &comment, nil
 }
 
-func (r *commentRepository) FindByArticleID(articleID uint) ([]*model.Comment, error) {
+func (r *commentRepository) FindByArticleID(articleID uint, search *string, pagination *pagination.Pagination) ([]*model.Comment, error) {
 	var comments []*model.Comment
 
 	err := r.db.Where("article_id = ?", articleID).
+		Scopes(pagination.Paginate()).
+		Where("title LIKE ?", "%"+*search+"%").
+		Where("body LIKE ?", "%"+*search+"%").
 		Preload("User").
 		Preload("ReplyComments").
 		Preload("ReplyComments.User").

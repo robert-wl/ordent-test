@@ -286,6 +286,18 @@ paths:
       - application/json
       description: Get all comments on an article
       parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
       - description: Article ID
         in: path
         name: id

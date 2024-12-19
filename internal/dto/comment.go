@@ -1,5 +1,12 @@
 package dto
 
+import "ordent-test/pkg/pagination"
+
+type GetArticleCommentRequest struct {
+	*pagination.Pagination
+	Search *string `form:"search,omitempty" binding:"omitempty"`
+}
+
 type CreateCommentRequest struct {
 	ArticleID *string `json:"article_id"`
 	ParentID  *string `json:"parent_id"`

@@ -5,11 +5,12 @@ import (
 	"ordent-test/internal/domain/model"
 	"ordent-test/internal/dto"
 	"ordent-test/internal/infrastructure/repository"
+	"ordent-test/pkg/pagination"
 )
 
 type CommentService interface {
 	GetComment(commentID string) (*model.Comment, error)
-	GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error)
+	GetArticleComments(articleID string, dto *dto.GetArticleCommentRequest) ([]*model.Comment, error)
 	CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error)
 	UpdateComment(user *model.User, commentID string, dto *dto.UpdateCommentRequest) (*model.Comment, error)
 	DeleteComment(user *model.User, commentID string) error
@@ -31,14 +32,22 @@ func (s *commentService) GetComment(commentID string) (*model.Comment, error) {
 	return s.commentRepo.FindBySecureID(commentID)
 }
 
-func (s *commentService) GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error) {
+func (s *commentService) GetArticleComments(articleID string, dto *dto.GetArticleCommentRequest) ([]*model.Comment, error) {
 	article, err := s.articleRepo.FindBySecureID(articleID)
 
 	if err != nil {
 		return nil, fmt.Errorf("article with id %s not found", articleID)
 	}
 
-	return s.commentRepo.FindByArticleID(article.ID)
+	if dto.Search == nil {
+		dto.Search = new(string)
+	}
+
+	if dto.Pagination == nil {
+		dto.Pagination = new(pagination.Pagination)
+	}
+
+	return s.commentRepo.FindByArticleID(article.ID, dto.Search, dto.Pagination)
 }
 
 func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error) {

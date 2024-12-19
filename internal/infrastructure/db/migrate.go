@@ -8,7 +8,6 @@ import (
 func AutoMigrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&model2.Comment{},
-		&model2.CommentLike{},
 		&model2.Article{},
 		&model2.User{},
 	)

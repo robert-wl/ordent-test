@@ -33,7 +33,10 @@ func (h *AuthHandler) LogIn(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(
 			http.StatusBadRequest,
-			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
 		)
 		return
 	}
@@ -43,7 +46,10 @@ func (h *AuthHandler) LogIn(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(
 			http.StatusBadRequest,
-			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+			utils.NewErrorResponse(
+				"Unauthorized",
+				http.StatusUnauthorized,
+				err.Error()),
 		)
 		return
 	}
@@ -68,7 +74,10 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(
 			http.StatusBadRequest,
-			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
 		)
 		return
 	}
@@ -78,7 +87,10 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(
 			http.StatusBadRequest,
-			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
 		)
 		return
 	}

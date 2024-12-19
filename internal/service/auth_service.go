@@ -7,6 +7,7 @@ import (
 	"ordent-test/internal/infrastructure/repository"
 	"ordent-test/pkg/auth"
 	"ordent-test/pkg/utils"
+	"strings"
 )
 
 type AuthService interface {
@@ -60,6 +61,12 @@ func (s *authService) Register(dto *dto.RegisterRequest) (*model.User, error) {
 	user, err = s.repo.Create(user)
 
 	if err != nil {
+		if strings.Contains(err.Error(), "idx_users_email") {
+			return nil, fmt.Errorf("email already exists")
+		}
+		if strings.Contains(err.Error(), "idx_users_username") {
+			return nil, fmt.Errorf("username already exists")
+		}
 		return nil, fmt.Errorf("failed to create user")
 	}
 

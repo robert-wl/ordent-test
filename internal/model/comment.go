@@ -1,12 +1,18 @@
 package model
 
+import "time"
+
 type Comment struct {
-	ID        uint   `json:"id" gorm:"primary_key"`
-	SecureID  string `json:"secure_id" gorm:"type:char(36);unique_index;not null"`
-	ArticleID uint   `json:"article_id" gorm:"index;not null"`
-	ReplyID   uint   `json:"reply_id" gorm:"index"`
-	UserID    uint   `json:"user_id" gorm:"index;not null"`
-	Body      string `json:"body" gorm:"not null"`
-	CreatedAt string `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt string `json:"updated_at" gorm:"autoUpdateTime"`
+	ID        uint      `json:"id" gorm:"primary_key"`
+	SecureID  string    `json:"secure_id" gorm:"type:char(36);unique_index;not null"`
+	ArticleID *uint     `json:"article_id" gorm:"index;default:null"`
+	ParentID  *uint     `json:"reply_id" gorm:"index;default:null"`
+	UserID    uint      `json:"user_id" gorm:"index;not null"`
+	Body      string    `json:"body" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`
+
+	Article *Article `json:"article" gorm:"foreignKey:ArticleID"`
+	Comment *Comment `json:"comment" gorm:"foreignKey:ParentID"`
+	User    User     `json:"user" gorm:"foreignKey:UserID"`
 }

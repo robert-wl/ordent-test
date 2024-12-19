@@ -28,5 +28,9 @@ func (p *Pagination) GetLimit() int {
 		return 5
 	}
 
+	if *p.Limit > 50 {
+		return 50
+	}
+
 	return *p.Limit
 }

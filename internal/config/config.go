@@ -7,11 +7,17 @@ import (
 
 type Config struct {
 	ServerPort string
+
+	PostgresUsername string
+	PostgresPassword string
+	PostgresHost     string
+	PostgresPort     string
+	PostgresDB       string
 }
 
 var config *Config
 
-func Load() *Config {
+func Get() *Config {
 	if config != nil {
 		return config
 	}
@@ -22,6 +28,12 @@ func Load() *Config {
 
 	config = &Config{
 		ServerPort: getEnv("SERVER_PORT"),
+
+		PostgresUsername: getEnv("POSTGRES_USERNAME"),
+		PostgresPassword: getEnv("POSTGRES_PASSWORD"),
+		PostgresHost:     getEnv("POSTGRES_HOST"),
+		PostgresPort:     getEnv("POSTGRES_PORT"),
+		PostgresDB:       getEnv("POSTGRES_DB"),
 	}
 
 	return config

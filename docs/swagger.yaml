@@ -145,6 +145,31 @@ paths:
       tags:
       - articles
   /articles/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an article by its ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - articles
     put:
       consumes:
       - application/json

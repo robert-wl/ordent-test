@@ -45,6 +45,35 @@ func (h *ArticleHandler) GetArticles(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, articles)
 }
 
+// GetArticle @Summary Get an article
+// @Description Get an article by its ID
+// @Tags articles
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Article ID"
+// @Success 200 {object} model.Article
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /articles/{id} [get]
+func (h *ArticleHandler) GetArticle(ctx *gin.Context) {
+	articleId := ctx.Param("id")
+
+	article, err := h.articleService.GetArticle(articleId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, article)
+}
+
 // CreateArticle @Summary Create an article
 // @Description Create an article with the provided data
 // @Tags articles

@@ -9,6 +9,7 @@ import (
 
 type ArticleService interface {
 	GetArticles() ([]*model.Article, error)
+	GetArticle(articleId string) (*model.Article, error)
 	CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error)
 	UpdateArticle(user *model.User, articleId string, dto *dto.UpdateArticleRequest) (*model.Article, error)
 }
@@ -31,6 +32,16 @@ func (s *articleService) GetArticles() ([]*model.Article, error) {
 	}
 
 	return articles, nil
+}
+
+func (s *articleService) GetArticle(articleId string) (*model.Article, error) {
+	article, err := s.repo.FindBySecureID(articleId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return article, nil
 }
 
 func (s *articleService) CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error) {

@@ -10,6 +10,7 @@ import (
 type UserService interface {
 	GetUsers(dto *dto.GetUserRequest) ([]*model.User, error)
 	GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error)
+	GetUser(secureID string) (*model.User, error)
 }
 
 type userService struct {
@@ -44,4 +45,8 @@ func (s *userService) GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error)
 	}
 
 	return s.repo.Find(dto.Search, dto.Pagination)
+}
+
+func (s *userService) GetUser(secureID string) (*model.User, error) {
+	return s.repo.FindBySecureID(secureID)
 }

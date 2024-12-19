@@ -97,3 +97,31 @@ func (h *UserHandler) GetAdmins(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, users)
 }
+
+// GetUser @Summary Get a user
+// @Description Get a user by its ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /users/{id} [get]
+func (h *UserHandler) GetUser(ctx *gin.Context) {
+	userId := ctx.Param("id")
+
+	user, err := h.userService.GetUser(userId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}

@@ -96,7 +96,7 @@ func (s *commentService) UpdateComment(user *model.User, commentID string, dto *
 		return nil, fmt.Errorf("comment with id %s not found", commentID)
 	}
 
-	if comment.UserID != user.ID {
+	if !user.IsAdmin() && comment.UserID != user.ID {
 		return nil, fmt.Errorf("unauthorized to update comment")
 	}
 
@@ -113,7 +113,7 @@ func (s *commentService) DeleteComment(user *model.User, commentID string) error
 		return fmt.Errorf("comment with id %s not found", commentID)
 	}
 
-	if comment.UserID != user.ID {
+	if !user.IsAdmin() && comment.UserID != user.ID {
 		return fmt.Errorf("unauthorized to delete comment")
 	}
 

@@ -21,3 +21,7 @@ func (a *User) BeforeCreate(tx *gorm.DB) (err error) {
 	a.SecureID = uuid.New().String()
 	return
 }
+
+func (a *User) IsAdmin() bool {
+	return a.Role == "admin"
+}

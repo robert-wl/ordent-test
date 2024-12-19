@@ -52,10 +52,10 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		users := v1.Group("/users")
 		users.Use(authMiddleware)
 		{
-			users.GET("", userHandler.GetUsers)
-			users.GET("/admins", userHandler.GetAdmins)
-			users.PUT("/:id/promote", userHandler.PromoteUser)
-			users.PUT("/:id/demote", userHandler.DemoteUser)
+			users.GET("", middleware.Role("admin"), userHandler.GetUsers)
+			users.GET("/admins", middleware.Role("admin"), userHandler.GetAdmins)
+			users.PUT("/:id/promote", middleware.Role("admin"), userHandler.PromoteUser)
+			users.PUT("/:id/demote", middleware.Role("admin"), userHandler.DemoteUser)
 		}
 
 		articles := v1.Group("/articles")

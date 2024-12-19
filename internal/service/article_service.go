@@ -77,7 +77,7 @@ func (s *articleService) UpdateArticle(user *model.User, articleId string, dto *
 		return nil, err
 	}
 
-	if article.UserID != user.ID {
+	if !user.IsAdmin() && article.UserID != user.ID {
 		return nil, fmt.Errorf("unauthorized")
 	}
 
@@ -100,7 +100,7 @@ func (s *articleService) DeleteArticle(user *model.User, articleId string) error
 		return err
 	}
 
-	if article.UserID != user.ID {
+	if !user.IsAdmin() && article.UserID != user.ID {
 		return fmt.Errorf("unauthorized")
 	}
 

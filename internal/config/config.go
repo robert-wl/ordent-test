@@ -20,7 +20,7 @@ func Load() *Config {
 		panic("Error loading .env file: " + err.Error())
 	}
 
-	config := &Config{
+	config = &Config{
 		ServerPort: getEnv("SERVER_PORT"),
 	}
 

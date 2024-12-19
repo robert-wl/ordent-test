@@ -11,11 +11,9 @@ import (
 func CreateJWT(user *model.User) (*string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"issuer":   user.Username,
-			"sub":      user.SecureID,
-			"exp":      time.Now().Add(time.Hour).Unix(),
-			"username": user.Username,
-			"email":    user.Email,
+			"issuer": user.Username,
+			"sub":    user.SecureID,
+			"exp":    time.Now().Add(time.Hour).Unix(),
 		})
 
 	key := config.Get().JWTKey
@@ -42,8 +40,6 @@ func ParseJWT(jwtToken string) (*model.User, error) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		user := &model.User{
-			Username: claims["username"].(string),
-			Email:    claims["email"].(string),
 			SecureID: claims["sub"].(string),
 		}
 

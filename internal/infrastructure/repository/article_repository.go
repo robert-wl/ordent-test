@@ -10,6 +10,7 @@ type ArticleRepository interface {
 	FindBySecureID(secureID string) (*model.Article, error)
 	Create(article *model.Article) (*model.Article, error)
 	Update(article *model.Article) (*model.Article, error)
+	Delete(article *model.Article) error
 }
 
 type articleRepository struct {
@@ -62,4 +63,8 @@ func (r *articleRepository) Update(article *model.Article) (*model.Article, erro
 	}
 
 	return r.FindBySecureID(article.SecureID)
+}
+
+func (r *articleRepository) Delete(article *model.Article) error {
+	return r.db.Delete(article).Error
 }

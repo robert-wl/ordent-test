@@ -51,7 +51,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 			articles.GET("/:id", articleHandler.GetArticle)
 			articles.POST("", articleHandler.CreateArticle)
 			articles.PUT("/:id", articleHandler.UpdateArticle)
-			//articles.DELETE("/:id", articleHandler.DeleteArticle)
+			articles.DELETE("/:id", articleHandler.DeleteArticle)
 		}
 	}
 

@@ -145,6 +145,29 @@ paths:
       tags:
       - articles
   /articles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an article by its ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - articles
     get:
       consumes:
       - application/json

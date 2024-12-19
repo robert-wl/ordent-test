@@ -159,3 +159,33 @@ func (h *ArticleHandler) UpdateArticle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, article)
 }
+
+// DeleteArticle @Summary Delete an article
+// @Description Delete an article by its ID
+// @Tags articles
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Article ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /articles/{id} [delete]
+func (h *ArticleHandler) DeleteArticle(ctx *gin.Context) {
+	articleId := ctx.Param("id")
+	user := ctx.MustGet("user").(*model.User)
+
+	err := h.articleService.DeleteArticle(user, articleId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
+		)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}

@@ -12,6 +12,7 @@ type ArticleService interface {
 	GetArticle(articleId string) (*model.Article, error)
 	CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error)
 	UpdateArticle(user *model.User, articleId string, dto *dto.UpdateArticleRequest) (*model.Article, error)
+	DeleteArticle(user *model.User, articleId string) error
 }
 
 type articleService struct {
@@ -81,4 +82,22 @@ func (s *articleService) UpdateArticle(user *model.User, articleId string, dto *
 	}
 
 	return updatedArticle, nil
+}
+
+func (s *articleService) DeleteArticle(user *model.User, articleId string) error {
+	article, err := s.repo.FindBySecureID(articleId)
+
+	if err != nil {
+		return err
+	}
+
+	if article.UserID != user.ID {
+		return fmt.Errorf("unauthorized")
+	}
+
+	if err := s.repo.Delete(article); err != nil {
+		return err
+	}
+
+	return nil
 }

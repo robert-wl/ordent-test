@@ -24,7 +24,8 @@ func Get() *Config {
 		return config
 	}
 
-	if err := godotenv.Load(); err != nil {
+	appEnv := getEnv("APP_ENV")
+	if err := godotenv.Load(); err != nil && appEnv != "production" {
 		panic("Error loading .env file: " + err.Error())
 	}
 

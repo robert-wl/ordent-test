@@ -15,16 +15,12 @@ tmp/
 
 vendor/
 
-*_test.go
-*.test
-
 *.out
 
 .env
 .env.*
 
 README.md
-docs/
 
 .DS_Store
 .DS_Store?

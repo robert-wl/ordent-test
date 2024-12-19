@@ -39,7 +39,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: localhost:3000
+host: localhost:8080
 info:
   contact: {}
   description: This is a sample server for Ordent Test.
@@ -70,6 +70,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
       tags:
       - authentication
   /auth/register:
@@ -93,6 +95,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
       tags:
       - authentication
 securityDefinitions:

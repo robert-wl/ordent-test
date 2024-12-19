@@ -24,6 +24,7 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 // @Accept json
 // @Produce json
 // @Param request body dto.LogInRequest true "User credentials"
+// @Security BearerAuth
 // @Success 200 {object} dto.LogInResponse
 // @Failure 400 {object} utils.ErrorResponse
 // @Router /auth/login [post]
@@ -65,6 +66,7 @@ func (h *AuthHandler) LogIn(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request body dto.RegisterRequest true "User credentials"
+// @Security BearerAuth
 // @Success 200
 // @Failure 400 {object} utils.ErrorResponse
 // @Router /auth/register [post]

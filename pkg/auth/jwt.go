@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"ordent-test/config"
+	"ordent-test/internal/domain/model"
 	"time"
 )
 
-func CreateJWT(userID string) (*string, error) {
+func CreateJWT(user *model.User) (*string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.RegisteredClaims{
-			Issuer:    "Ordent",
-			Subject:   userID,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
+		jwt.MapClaims{
+			"issuer":   user.Username,
+			"subject":  user.SecureID,
+			"exp":      time.Now().Add(time.Hour).Unix(),
+			"username": user.Username,
+			"email":    user.Email,
 		})
 
 	key := config.Get().JWTKey
@@ -26,8 +29,7 @@ func CreateJWT(userID string) (*string, error) {
 	return &jwtString, nil
 }
 
-func ParseJWT(jwtToken string) (*string, error) {
-
+func ParseJWT(jwtToken string) (*model.User, error) {
 	key := config.Get().JWTKey
 
 	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
@@ -39,9 +41,14 @@ func ParseJWT(jwtToken string) (*string, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		id := claims["sub"].(string)
-		return &id, nil
-	} else {
-		return nil, fmt.Errorf("invalid token")
+		user := &model.User{
+			Username: claims["username"].(string),
+			Email:    claims["email"].(string),
+			SecureID: claims["sub"].(string),
+		}
+
+		return user, nil
 	}
+
+	return nil, fmt.Errorf("invalid token")
 }

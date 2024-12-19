@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"ordent-test/docs"
 	"ordent-test/internal/handler"
+	"ordent-test/internal/infrastructure/middleware"
 	"ordent-test/internal/infrastructure/repository"
 	"ordent-test/internal/service"
 )
@@ -20,6 +21,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	authHandler := handler.NewAuthHandler(authService)
 
 	docs.SwaggerInfo.Title = "Ordent Test API"
+
+	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
@@ -37,5 +40,6 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	return r
 }

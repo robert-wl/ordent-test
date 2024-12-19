@@ -36,7 +36,7 @@ func (s *authService) LogIn(dto *dto.LogInRequest) (*string, error) {
 		return nil, fmt.Errorf("password is incorrect")
 	}
 
-	token, err := auth.CreateJWT(user.SecureID)
+	token, err := auth.CreateJWT(user)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create token")

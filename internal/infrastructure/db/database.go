@@ -1,10 +1,10 @@
-package database
+package db
 
 import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"ordent-test/internal/config"
+	"ordent-test/config"
 )
 
 var db *gorm.DB
@@ -26,7 +26,7 @@ func newDatabase() *gorm.DB {
 	)
 
 	if err != nil {
-		panic("failed to connect database" + err.Error())
+		panic("failed to connect db" + err.Error())
 	}
 
 	return db

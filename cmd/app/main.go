@@ -2,19 +2,19 @@ package main
 
 import (
 	"fmt"
-	"ordent-test/internal/config"
-	"ordent-test/internal/database"
+	"ordent-test/config"
+	database2 "ordent-test/internal/infrastructure/db"
 	"ordent-test/internal/router"
 )
 
 func main() {
 	cfg := config.Get()
 
-	db := database.Get()
-	err := database.AutoMigrate(db)
+	db := database2.Get()
+	err := database2.AutoMigrate(db)
 
 	if err != nil {
-		panic("failed to migrate database" + err.Error())
+		panic("failed to migrate db" + err.Error())
 	}
 
 	r := router.NewRouter()

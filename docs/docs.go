@@ -328,6 +328,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/comments": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a comment on an article or another comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "parameters": [
+                    {
+                        "description": "Comment details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -339,6 +383,27 @@ const docTemplate = `{
             ],
             "properties": {
                 "body": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateCommentRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "title"
+            ],
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "parent_id": {
                     "type": "string"
                 },
                 "title": {
@@ -426,6 +491,35 @@ const docTemplate = `{
                 },
                 "views": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.Comment": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "$ref": "#/definitions/model.Article"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "comment": {
+                    "$ref": "#/definitions/model.Comment"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "secure_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 }
             }
         },

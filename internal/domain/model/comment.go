@@ -12,6 +12,7 @@ type Comment struct {
 	ArticleID *uint     `json:"-" gorm:"index;default:null"`
 	ParentID  *uint     `json:"-" gorm:"index;default:null"`
 	UserID    uint      `json:"-" gorm:"index;not null"`
+	Title     string    `json:"title" gorm:"not null"`
 	Body      string    `json:"body" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`

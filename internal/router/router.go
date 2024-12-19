@@ -17,12 +17,15 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 
 	userRepo := repository.NewUserRepository(db)
 	articleRepo := repository.NewArticleRepository(db)
+	commentRepo := repository.NewCommentRepository(db)
 
 	authService := service.NewAuthService(userRepo)
 	articleService := service.NewArticleService(articleRepo)
+	commentService := service.NewCommentService(commentRepo, articleRepo)
 
 	authHandler := handler.NewAuthHandler(authService)
 	articleHandler := handler.NewArticleHandler(articleService)
+	commentHandler := handler.NewCommentHandler(commentService)
 
 	docs.SwaggerInfo.Title = "Ordent Test API"
 
@@ -52,6 +55,12 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 			articles.POST("", articleHandler.CreateArticle)
 			articles.PUT("/:id", articleHandler.UpdateArticle)
 			articles.DELETE("/:id", articleHandler.DeleteArticle)
+		}
+
+		comments := v1.Group("/comments")
+		comments.Use(authMiddleware)
+		{
+			comments.POST("", commentHandler.CreateComment)
 		}
 	}
 

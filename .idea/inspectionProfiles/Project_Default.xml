@@ -1,6 +1,12 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="GoDfaErrorMayBeNotNil" enabled="true" level="WARNING" enabled_by_default="true">
+      <methods>
+        <method importPath="ordent-test/internal/infrastructure/repository" receiver="ArticleRepository" name="FindBySecureID" />
+        <method importPath="ordent-test/internal/infrastructure/repository" receiver="CommentRepository" name="FindBySecureID" />
+      </methods>
+    </inspection_tool>
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>

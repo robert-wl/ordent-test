@@ -10,6 +10,20 @@ definitions:
     - body
     - title
     type: object
+  dto.CreateCommentRequest:
+    properties:
+      article_id:
+        type: string
+      body:
+        type: string
+      parent_id:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
   dto.LogInRequest:
     properties:
       email:
@@ -64,6 +78,25 @@ definitions:
         $ref: '#/definitions/model.User'
       views:
         type: integer
+    type: object
+  model.Comment:
+    properties:
+      article:
+        $ref: '#/definitions/model.Article'
+      body:
+        type: string
+      comment:
+        $ref: '#/definitions/model.Comment'
+      created_at:
+        type: string
+      secure_id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
     type: object
   model.User:
     properties:
@@ -293,6 +326,33 @@ paths:
             $ref: '#/definitions/utils.ErrorResponse'
       tags:
       - authentication
+  /comments:
+    post:
+      consumes:
+      - application/json
+      description: Create a comment on an article or another comment
+      parameters:
+      - description: Comment details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - comments
 securityDefinitions:
   BearerAuth:
     in: header

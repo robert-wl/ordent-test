@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"ordent-test/internal/domain/model"
 	"ordent-test/pkg/pagination"
@@ -8,6 +9,7 @@ import (
 
 type UserRepository interface {
 	Create(user *model.User) (*model.User, error)
+	Update(user *model.User) (*model.User, error)
 	Find(search *string, pagination *pagination.Pagination) ([]*model.User, error)
 	FindAdmins(search *string, pagination *pagination.Pagination) ([]*model.User, error)
 	FindByEmail(email string) (*model.User, error)
@@ -29,16 +31,23 @@ func (r *userRepository) Create(user *model.User) (*model.User, error) {
 		return nil, err
 	}
 
-	return user, nil
+	return r.FindBySecureID(user.SecureID)
+}
+
+func (r *userRepository) Update(user *model.User) (*model.User, error) {
+	if err := r.db.Save(user).Error; err != nil {
+		return nil, err
+	}
+	return r.FindBySecureID(user.SecureID)
 }
 
 func (r *userRepository) Find(search *string, pagination *pagination.Pagination) ([]*model.User, error) {
 	var users []*model.User
 
+	fmt.Println(pagination.Page, pagination.Limit, *search)
 	err := r.db.
 		Scopes(pagination.Paginate()).
 		Where("username LIKE ?", "%"+*search+"%").
-		Where("role = ?", "admin").
 		Find(&users).Error
 
 	if err != nil {
@@ -54,6 +63,7 @@ func (r *userRepository) FindAdmins(search *string, pagination *pagination.Pagin
 	err := r.db.
 		Scopes(pagination.Paginate()).
 		Where("username LIKE ?", "%"+*search+"%").
+		Where("role = ?", "admin").
 		Find(&users).Error
 
 	if err != nil {

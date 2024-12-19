@@ -125,3 +125,59 @@ func (h *UserHandler) GetUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
+
+// PromoteUser @Summary Promote a user
+// @Description Promote a user to admin
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /users/{id}/promote [put]
+func (h *UserHandler) PromoteUser(ctx *gin.Context) {
+	userId := ctx.Param("id")
+
+	user, err := h.userService.ChangeRole(userId, "admin")
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
+// DemoteUser @Summary Demote a user
+// @Description Demote a user to user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /users/{id}/demote [put]
+func (h *UserHandler) DemoteUser(ctx *gin.Context) {
+	userId := ctx.Param("id")
+
+	user, err := h.userService.ChangeRole(userId, "user")
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}

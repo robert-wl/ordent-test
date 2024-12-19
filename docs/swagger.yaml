@@ -532,6 +532,58 @@ paths:
       - BearerAuth: []
       tags:
       - users
+  /users/{id}/demote:
+    put:
+      consumes:
+      - application/json
+      description: Demote a user to user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - users
+  /users/{id}/promote:
+    put:
+      consumes:
+      - application/json
+      description: Promote a user to admin
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - users
   /users/admins:
     get:
       consumes:

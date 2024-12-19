@@ -11,6 +11,7 @@ type UserService interface {
 	GetUsers(dto *dto.GetUserRequest) ([]*model.User, error)
 	GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error)
 	GetUser(secureID string) (*model.User, error)
+	ChangeRole(secureID string, role string) (*model.User, error)
 }
 
 type userService struct {
@@ -44,9 +45,21 @@ func (s *userService) GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error)
 		dto.Pagination = new(pagination.Pagination)
 	}
 
-	return s.repo.Find(dto.Search, dto.Pagination)
+	return s.repo.FindAdmins(dto.Search, dto.Pagination)
 }
 
 func (s *userService) GetUser(secureID string) (*model.User, error) {
 	return s.repo.FindBySecureID(secureID)
+}
+
+func (s *userService) ChangeRole(secureID string, role string) (*model.User, error) {
+	user, err := s.repo.FindBySecureID(secureID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	user.Role = role
+
+	return s.repo.Update(user)
 }

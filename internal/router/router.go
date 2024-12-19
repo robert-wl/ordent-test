@@ -54,6 +54,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		{
 			users.GET("", userHandler.GetUsers)
 			users.GET("/admins", userHandler.GetAdmins)
+			users.PUT("/:id/promote", userHandler.PromoteUser)
+			users.PUT("/:id/demote", userHandler.DemoteUser)
 		}
 
 		articles := v1.Group("/articles")

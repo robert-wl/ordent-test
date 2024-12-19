@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	Create(user *model.User) (*model.User, error)
 	Find(search *string, pagination *pagination.Pagination) ([]*model.User, error)
+	FindAdmins(search *string, pagination *pagination.Pagination) ([]*model.User, error)
 	FindByEmail(email string) (*model.User, error)
 	FindBySecureID(secureID string) (*model.User, error)
 }
@@ -32,6 +33,22 @@ func (r *userRepository) Create(user *model.User) (*model.User, error) {
 }
 
 func (r *userRepository) Find(search *string, pagination *pagination.Pagination) ([]*model.User, error) {
+	var users []*model.User
+
+	err := r.db.
+		Scopes(pagination.Paginate()).
+		Where("username LIKE ?", "%"+*search+"%").
+		Where("role = ?", "admin").
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (r *userRepository) FindAdmins(search *string, pagination *pagination.Pagination) ([]*model.User, error) {
 	var users []*model.User
 
 	err := r.db.

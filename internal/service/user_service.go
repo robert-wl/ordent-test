@@ -9,6 +9,7 @@ import (
 
 type UserService interface {
 	GetUsers(dto *dto.GetUserRequest) ([]*model.User, error)
+	GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error)
 }
 
 type userService struct {
@@ -22,6 +23,18 @@ func NewUserService(r repository.UserRepository) UserService {
 }
 
 func (s *userService) GetUsers(dto *dto.GetUserRequest) ([]*model.User, error) {
+	if dto.Search == nil {
+		dto.Search = new(string)
+	}
+
+	if dto.Pagination == nil {
+		dto.Pagination = new(pagination.Pagination)
+	}
+
+	return s.repo.Find(dto.Search, dto.Pagination)
+}
+
+func (s *userService) GetAdmins(dto *dto.GetAdminRequest) ([]*model.User, error) {
 	if dto.Search == nil {
 		dto.Search = new(string)
 	}

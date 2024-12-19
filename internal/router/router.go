@@ -53,6 +53,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		users.Use(authMiddleware)
 		{
 			users.GET("", userHandler.GetUsers)
+			users.GET("/admins", userHandler.GetAdmins)
 		}
 
 		articles := v1.Group("/articles")

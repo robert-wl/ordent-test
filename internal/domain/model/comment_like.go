@@ -1,10 +1,14 @@
 package model
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"time"
+)
 
 type CommentLike struct {
 	ID        uint      `json:"id" gorm:"primary_key"`
-	SecureID  string    `json:"secure_id" gorm:"type:char(36);unique_index;not null"`
+	SecureID  string    `json:"secure_id" gorm:"type:char(36);uniqueIndex;not null"`
 	CommentID uint      `json:"comment_id" gorm:"index;not null"`
 	UserID    uint      `json:"user_id" gorm:"index;not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
@@ -12,4 +16,9 @@ type CommentLike struct {
 
 	Comment Comment `json:"comment" gorm:"foreignKey:CommentID"`
 	User    User    `json:"user" gorm:"foreignKey:UserID"`
+}
+
+func (a *CommentLike) BeforeCreate(tx *gorm.DB) (err error) {
+	a.SecureID = uuid.New().String()
+	return
 }

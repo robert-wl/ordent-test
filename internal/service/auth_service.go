@@ -11,7 +11,7 @@ import (
 
 type AuthService interface {
 	LogIn(dto *dto.LogInRequest) (*string, error)
-	Register(dto *dto.RegisterRequest) error
+	Register(dto *dto.RegisterRequest) (*model.User, error)
 }
 
 type authService struct {
@@ -44,11 +44,11 @@ func (s *authService) LogIn(dto *dto.LogInRequest) (*string, error) {
 	return token, nil
 }
 
-func (s *authService) Register(dto *dto.RegisterRequest) error {
+func (s *authService) Register(dto *dto.RegisterRequest) (*model.User, error) {
 	encryptPassword, err := utils.Encrypt(dto.Password)
 
 	if err != nil {
-		return fmt.Errorf("failed to encrypt password")
+		return nil, fmt.Errorf("failed to encrypt password")
 	}
 
 	user := &model.User{
@@ -57,11 +57,11 @@ func (s *authService) Register(dto *dto.RegisterRequest) error {
 		Password: encryptPassword,
 	}
 
-	err = s.repo.Create(user)
+	user, err = s.repo.Create(user)
 
 	if err != nil {
-		return fmt.Errorf("failed to create user")
+		return nil, fmt.Errorf("failed to create user")
 	}
 
-	return nil
+	return user, nil
 }

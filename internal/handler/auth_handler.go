@@ -73,7 +73,7 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	err := h.authService.Register(&req)
+	user, err := h.authService.Register(&req)
 
 	if err != nil {
 		ctx.JSON(
@@ -83,5 +83,5 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, nil)
+	ctx.JSON(http.StatusOK, user)
 }

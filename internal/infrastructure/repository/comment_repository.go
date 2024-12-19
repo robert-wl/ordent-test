@@ -7,6 +7,7 @@ import (
 
 type CommentRepository interface {
 	FindBySecureID(secureID string) (*model.Comment, error)
+	FindByArticleID(articleID uint) ([]*model.Comment, error)
 	Create(comment *model.Comment) (*model.Comment, error)
 }
 
@@ -25,6 +26,7 @@ func (r *commentRepository) FindBySecureID(secureID string) (*model.Comment, err
 
 	err := r.db.Where("secure_id = ?", secureID).
 		Preload("User").
+		Preload("ReplyComments").
 		First(&comment).Error
 
 	if err != nil {
@@ -32,6 +34,22 @@ func (r *commentRepository) FindBySecureID(secureID string) (*model.Comment, err
 	}
 
 	return &comment, nil
+}
+
+func (r *commentRepository) FindByArticleID(articleID uint) ([]*model.Comment, error) {
+	var comments []*model.Comment
+
+	err := r.db.Where("article_id = ?", articleID).
+		Preload("User").
+		Preload("ReplyComments").
+		Preload("ReplyComments.User").
+		Find(&comments).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return comments, nil
 }
 
 func (r *commentRepository) Create(comment *model.Comment) (*model.Comment, error) {

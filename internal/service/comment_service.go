@@ -8,6 +8,7 @@ import (
 )
 
 type CommentService interface {
+	GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error)
 	CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error)
 }
 
@@ -21,6 +22,16 @@ func NewCommentService(cr repository.CommentRepository, ar repository.ArticleRep
 		commentRepo: cr,
 		articleRepo: ar,
 	}
+}
+
+func (s *commentService) GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error) {
+	article, err := s.articleRepo.FindBySecureID(articleID)
+
+	if err != nil {
+		return nil, fmt.Errorf("article with id %s not found", articleID)
+	}
+
+	return s.commentRepo.FindByArticleID(article.ID)
 }
 
 func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error) {

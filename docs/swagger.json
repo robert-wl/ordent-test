@@ -215,6 +215,51 @@
                 }
             }
         },
+        "/articles/{id}/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all comments on an article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "Authenticate a user with their credentials and return an access token",
@@ -491,17 +536,17 @@
         "model.Comment": {
             "type": "object",
             "properties": {
-                "article": {
-                    "$ref": "#/definitions/model.Article"
-                },
                 "body": {
                     "type": "string"
                 },
-                "comment": {
-                    "$ref": "#/definitions/model.Comment"
-                },
                 "created_at": {
                     "type": "string"
+                },
+                "reply_comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Comment"
+                    }
                 },
                 "secure_id": {
                     "type": "string"

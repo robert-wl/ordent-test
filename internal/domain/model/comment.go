@@ -17,9 +17,10 @@ type Comment struct {
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`
 
-	Article *Article `json:"article" gorm:"foreignKey:ArticleID"`
-	Comment *Comment `json:"comment" gorm:"foreignKey:ParentID"`
-	User    User     `json:"user" gorm:"foreignKey:UserID"`
+	Article       *Article   `json:"-" gorm:"foreignKey:ArticleID"`
+	ParentComment *Comment   `json:"-" gorm:"foreignKey:ParentID"`
+	ReplyComments []*Comment `json:"reply_comments,omitempty" gorm:"foreignKey:ParentID"`
+	User          User       `json:"user,omitempty" gorm:"foreignKey:UserID"`
 }
 
 func (a *Comment) BeforeCreate(tx *gorm.DB) (err error) {

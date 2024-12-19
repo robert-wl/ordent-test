@@ -81,14 +81,14 @@ definitions:
     type: object
   model.Comment:
     properties:
-      article:
-        $ref: '#/definitions/model.Article'
       body:
         type: string
-      comment:
-        $ref: '#/definitions/model.Comment'
       created_at:
         type: string
+      reply_comments:
+        items:
+          $ref: '#/definitions/model.Comment'
+        type: array
       secure_id:
         type: string
       title:
@@ -257,6 +257,34 @@ paths:
       - BearerAuth: []
       tags:
       - articles
+  /articles/{id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: Get all comments on an article
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - comments
   /auth/login:
     post:
       consumes:

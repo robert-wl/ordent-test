@@ -58,3 +58,31 @@ func (h *CommentHandler) CreateComment(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, comment)
 }
+
+// GetCommentsByArticle @Summary Get comments by article
+// @Description Get all comments on an article
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Article ID"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /articles/{id}/comments [get]
+func (h *CommentHandler) GetCommentsByArticle(ctx *gin.Context) {
+	articleId := ctx.Param("id")
+
+	comments, err := h.commentService.GetCommentsByArticleSecureID(articleId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comments)
+}

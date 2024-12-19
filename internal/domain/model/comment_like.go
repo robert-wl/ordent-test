@@ -7,10 +7,10 @@ import (
 )
 
 type CommentLike struct {
-	ID        uint      `json:"id" gorm:"primary_key"`
+	ID        uint      `json:"-" gorm:"primary_key"`
 	SecureID  string    `json:"secure_id" gorm:"type:char(36);uniqueIndex;not null"`
-	CommentID uint      `json:"comment_id" gorm:"index;not null"`
-	UserID    uint      `json:"user_id" gorm:"index;not null"`
+	CommentID uint      `json:"-" gorm:"index;not null"`
+	UserID    uint      `json:"-" gorm:"index;not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`
 

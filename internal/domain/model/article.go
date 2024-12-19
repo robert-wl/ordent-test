@@ -7,9 +7,9 @@ import (
 )
 
 type Article struct {
-	ID        uint      `json:"id" gorm:"primary_key"`
+	ID        uint      `json:"-" gorm:"primary_key"`
 	SecureID  string    `json:"secure_id" gorm:"type:char(36);uniqueIndex;not null"`
-	UserID    uint      `json:"user_id" gorm:"index;not null"`
+	UserID    uint      `json:"-" gorm:"index;not null"`
 	Title     string    `json:"title" gorm:"not null"`
 	Body      string    `json:"body" gorm:"not null"`
 	Views     uint      `json:"views" gorm:"default:0"`

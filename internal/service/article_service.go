@@ -8,6 +8,7 @@ import (
 )
 
 type ArticleService interface {
+	GetArticles() ([]*model.Article, error)
 	CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error)
 	UpdateArticle(user *model.User, articleId string, dto *dto.UpdateArticleRequest) (*model.Article, error)
 }
@@ -20,6 +21,16 @@ func NewArticleService(r repository.ArticleRepository) ArticleService {
 	return &articleService{
 		repo: r,
 	}
+}
+
+func (s *articleService) GetArticles() ([]*model.Article, error) {
+	articles, err := s.repo.FindAll()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
 }
 
 func (s *articleService) CreateArticle(user *model.User, dto *dto.CreateArticleRequest) (*model.Article, error) {

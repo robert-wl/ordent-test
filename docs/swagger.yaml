@@ -97,6 +97,27 @@ info:
   version: "1.0"
 paths:
   /articles:
+    get:
+      consumes:
+      - application/json
+      description: Get all articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Article'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - articles
     post:
       consumes:
       - application/json

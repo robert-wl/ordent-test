@@ -6,6 +6,7 @@ import (
 )
 
 type ArticleRepository interface {
+	FindAll() ([]*model.Article, error)
 	FindBySecureID(secureID string) (*model.Article, error)
 	Create(article *model.Article) (*model.Article, error)
 	Update(article *model.Article) (*model.Article, error)
@@ -19,6 +20,18 @@ func NewArticleRepository(db *gorm.DB) ArticleRepository {
 	return &articleRepository{
 		db: db,
 	}
+}
+
+func (r *articleRepository) FindAll() ([]*model.Article, error) {
+	var articles []*model.Article
+
+	err := r.db.Preload("User").Find(&articles).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
 }
 
 func (r *articleRepository) FindBySecureID(secureID string) (*model.Article, error) {

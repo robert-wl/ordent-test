@@ -17,7 +17,7 @@ func main() {
 		panic("failed to migrate db" + err.Error())
 	}
 
-	r := router.NewRouter()
+	r := router.NewRouter(db)
 
 	err = r.Run(fmt.Sprintf(":%s", cfg.ServerPort))
 

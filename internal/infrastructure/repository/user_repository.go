@@ -6,6 +6,7 @@ import (
 )
 
 type UserRepository interface {
+	Create(user *model.User) error
 	FindByEmailAndPassword(email, password string) (*model.User, error)
 }
 
@@ -17,6 +18,10 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{
 		db: db,
 	}
+}
+
+func (r *userRepository) Create(user *model.User) error {
+	return r.db.Create(user).Error
 }
 
 func (r *userRepository) FindByEmailAndPassword(email, password string) (*model.User, error) {

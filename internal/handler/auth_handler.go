@@ -19,7 +19,6 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 }
 
 func (h *AuthHandler) LogIn(ctx *gin.Context) {
-
 	var req dto.LogInRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -40,7 +39,31 @@ func (h *AuthHandler) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, dto.LogInResponse{
-		Token: *token,
+	ctx.JSON(http.StatusOK, dto.LogInResponse{
+		AccessToken: *token,
 	})
+}
+
+func (h *AuthHandler) Register(ctx *gin.Context) {
+	var req dto.RegisterRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+		)
+		return
+	}
+
+	err := h.authService.Register(&req)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(err.Error(), http.StatusBadRequest, err.Error()),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
 }

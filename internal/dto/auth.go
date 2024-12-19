@@ -6,5 +6,11 @@ type LogInRequest struct {
 }
 
 type LogInResponse struct {
-	Token string `json:"token"`
+	AccessToken string `json:"access_token"`
+}
+
+type RegisterRequest struct {
+	Username string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }

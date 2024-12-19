@@ -13,6 +13,8 @@ type Config struct {
 	PostgresHost     string
 	PostgresPort     string
 	PostgresDB       string
+
+	JWTKey string
 }
 
 var config *Config
@@ -34,6 +36,8 @@ func Get() *Config {
 		PostgresHost:     getEnv("POSTGRES_HOST"),
 		PostgresPort:     getEnv("POSTGRES_PORT"),
 		PostgresDB:       getEnv("POSTGRES_DB"),
+
+		JWTKey: getEnv("JWT_KEY"),
 	}
 
 	return config

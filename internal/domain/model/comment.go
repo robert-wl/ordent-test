@@ -18,8 +18,8 @@ type Comment struct {
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime;not null"`
 
 	Article       *Article   `json:"-" gorm:"foreignKey:ArticleID"`
-	ParentComment *Comment   `json:"-" gorm:"foreignKey:ParentID"`
-	ReplyComments []*Comment `json:"reply_comments,omitempty" gorm:"foreignKey:ParentID"`
+	ParentComment *Comment   `json:"-" gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ReplyComments []*Comment `json:"reply_comments,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	User          User       `json:"user,omitempty" gorm:"foreignKey:UserID"`
 }
 

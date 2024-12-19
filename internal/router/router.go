@@ -22,8 +22,6 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 
 	docs.SwaggerInfo.Title = "Ordent Test API"
 
-	r.Use(middleware.AuthMiddleware())
-
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "pong",
@@ -36,6 +34,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		{
 			auth.POST("/login", authHandler.LogIn)
 			auth.POST("/register", authHandler.Register)
+
+			auth.GET("/me", middleware.AuthMiddleware(), authHandler.Me)
 		}
 	}
 

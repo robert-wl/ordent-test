@@ -86,3 +86,32 @@ func (h *CommentHandler) GetCommentsByArticle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, comments)
 }
+
+// DeleteComment @Summary Delete a comment
+// @Description Delete a comment by its ID, only the owner or admin can delete
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Comment ID"
+// @Success 200
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /comments/{id} [delete]
+func (h *CommentHandler) DeleteComment(ctx *gin.Context) {
+	commentId := ctx.Param("id")
+	user := ctx.MustGet("user").(*model.User)
+
+	err := h.commentService.DeleteComment(user, commentId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}

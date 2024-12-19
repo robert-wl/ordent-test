@@ -140,7 +140,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Update an article with the provided data",
+                "description": "Update an article with the provided data, only the owner or admin can update",
                 "consumes": [
                     "application/json"
                 ],
@@ -189,7 +189,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Delete an article by its ID",
+                "description": "Delete an article by its ID, only the owner or admin can delete",
                 "consumes": [
                     "application/json"
                 ],
@@ -408,6 +408,45 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.Comment"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a comment by its ID, only the owner or admin can delete",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",

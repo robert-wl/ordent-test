@@ -181,7 +181,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete an article by its ID
+      description: Delete an article by its ID, only the owner or admin can delete
       parameters:
       - description: Article ID
         in: path
@@ -229,7 +229,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update an article with the provided data
+      description: Update an article with the provided data, only the owner or admin
+        can update
       parameters:
       - description: Article ID
         in: path
@@ -373,6 +374,30 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a comment by its ID, only the owner or admin can delete
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
         "400":
           description: Bad Request
           schema:

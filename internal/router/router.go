@@ -62,6 +62,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		comments.Use(authMiddleware)
 		{
 			comments.POST("", commentHandler.CreateComment)
+			comments.DELETE("/:id", commentHandler.DeleteComment)
 		}
 	}
 

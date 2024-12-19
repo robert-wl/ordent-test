@@ -9,6 +9,7 @@ type CommentRepository interface {
 	FindBySecureID(secureID string) (*model.Comment, error)
 	FindByArticleID(articleID uint) ([]*model.Comment, error)
 	Create(comment *model.Comment) (*model.Comment, error)
+	Delete(comment *model.Comment) error
 }
 
 type commentRepository struct {
@@ -58,4 +59,8 @@ func (r *commentRepository) Create(comment *model.Comment) (*model.Comment, erro
 	}
 
 	return r.FindBySecureID(comment.SecureID)
+}
+
+func (r *commentRepository) Delete(comment *model.Comment) error {
+	return r.db.Delete(comment).Error
 }

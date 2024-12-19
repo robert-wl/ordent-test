@@ -117,7 +117,7 @@ func (h *ArticleHandler) CreateArticle(ctx *gin.Context) {
 }
 
 // UpdateArticle @Summary Update an article
-// @Description Update an article with the provided data
+// @Description Update an article with the provided data, only the owner or admin can update
 // @Tags articles
 // @Accept json
 // @Produce json
@@ -161,7 +161,7 @@ func (h *ArticleHandler) UpdateArticle(ctx *gin.Context) {
 }
 
 // DeleteArticle @Summary Delete an article
-// @Description Delete an article by its ID
+// @Description Delete an article by its ID, only the owner or admin can delete
 // @Tags articles
 // @Accept json
 // @Produce json

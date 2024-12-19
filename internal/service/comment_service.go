@@ -10,6 +10,7 @@ import (
 type CommentService interface {
 	GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error)
 	CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error)
+	DeleteComment(user *model.User, commentID string) error
 }
 
 type commentService struct {
@@ -71,4 +72,18 @@ func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentR
 	}
 
 	return s.commentRepo.Create(comment)
+}
+
+func (s *commentService) DeleteComment(user *model.User, commentID string) error {
+	comment, err := s.commentRepo.FindBySecureID(commentID)
+
+	if err != nil {
+		return fmt.Errorf("comment with id %s not found", commentID)
+	}
+
+	if comment.UserID != user.ID {
+		return fmt.Errorf("unauthorized to delete comment")
+	}
+
+	return s.commentRepo.Delete(comment)
 }

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"ordent-test/pkg/auth"
@@ -14,7 +13,11 @@ func AuthMiddleware() gin.HandlerFunc {
 		header := ctx.GetHeader("Authorization")
 
 		if header == "" {
-			ctx.Next()
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.NewErrorResponse(
+				"Unauthorized",
+				http.StatusUnauthorized,
+				"Token is required",
+			))
 			return
 		}
 
@@ -33,7 +36,6 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println(user)
 		ctx.Set("user", user)
 	}
 }

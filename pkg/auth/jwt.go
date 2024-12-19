@@ -12,7 +12,7 @@ func CreateJWT(user *model.User) (*string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"issuer":   user.Username,
-			"subject":  user.SecureID,
+			"sub":      user.SecureID,
 			"exp":      time.Now().Add(time.Hour).Unix(),
 			"username": user.Username,
 			"email":    user.Email,

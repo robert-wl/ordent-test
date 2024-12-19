@@ -8,8 +8,10 @@ import (
 )
 
 type CommentService interface {
+	GetComment(commentID string) (*model.Comment, error)
 	GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error)
 	CreateComment(user *model.User, dto *dto.CreateCommentRequest) (*model.Comment, error)
+	UpdateComment(user *model.User, commentID string, dto *dto.UpdateCommentRequest) (*model.Comment, error)
 	DeleteComment(user *model.User, commentID string) error
 }
 
@@ -23,6 +25,10 @@ func NewCommentService(cr repository.CommentRepository, ar repository.ArticleRep
 		commentRepo: cr,
 		articleRepo: ar,
 	}
+}
+
+func (s *commentService) GetComment(commentID string) (*model.Comment, error) {
+	return s.commentRepo.FindBySecureID(commentID)
 }
 
 func (s *commentService) GetCommentsByArticleSecureID(articleID string) ([]*model.Comment, error) {
@@ -72,6 +78,23 @@ func (s *commentService) CreateComment(user *model.User, dto *dto.CreateCommentR
 	}
 
 	return s.commentRepo.Create(comment)
+}
+
+func (s *commentService) UpdateComment(user *model.User, commentID string, dto *dto.UpdateCommentRequest) (*model.Comment, error) {
+	comment, err := s.commentRepo.FindBySecureID(commentID)
+
+	if err != nil {
+		return nil, fmt.Errorf("comment with id %s not found", commentID)
+	}
+
+	if comment.UserID != user.ID {
+		return nil, fmt.Errorf("unauthorized to update comment")
+	}
+
+	comment.Title = dto.Title
+	comment.Body = dto.Body
+
+	return s.commentRepo.Update(comment)
 }
 
 func (s *commentService) DeleteComment(user *model.User, commentID string) error {

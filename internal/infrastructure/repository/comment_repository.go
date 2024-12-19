@@ -9,6 +9,7 @@ type CommentRepository interface {
 	FindBySecureID(secureID string) (*model.Comment, error)
 	FindByArticleID(articleID uint) ([]*model.Comment, error)
 	Create(comment *model.Comment) (*model.Comment, error)
+	Update(comment *model.Comment) (*model.Comment, error)
 	Delete(comment *model.Comment) error
 }
 
@@ -55,6 +56,14 @@ func (r *commentRepository) FindByArticleID(articleID uint) ([]*model.Comment, e
 
 func (r *commentRepository) Create(comment *model.Comment) (*model.Comment, error) {
 	if err := r.db.Create(comment).Error; err != nil {
+		return nil, err
+	}
+
+	return r.FindBySecureID(comment.SecureID)
+}
+
+func (r *commentRepository) Update(comment *model.Comment) (*model.Comment, error) {
+	if err := r.db.Save(comment).Error; err != nil {
 		return nil, err
 	}
 

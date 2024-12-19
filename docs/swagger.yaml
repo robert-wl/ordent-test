@@ -62,6 +62,13 @@ definitions:
     - body
     - title
     type: object
+  dto.UpdateCommentRequest:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    type: object
   model.Article:
     properties:
       body:
@@ -398,6 +405,62 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: Get a comment by its ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update a comment by its ID, only the owner or admin can update
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
         "400":
           description: Bad Request
           schema:

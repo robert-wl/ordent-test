@@ -59,6 +59,34 @@ func (h *CommentHandler) CreateComment(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, comment)
 }
 
+// GetComment @Summary Get a comment
+// @Description Get a comment by its ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Comment ID"
+// @Success 200 {object} model.Comment
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /comments/{id} [get]
+func (h *CommentHandler) GetComment(ctx *gin.Context) {
+	commentId := ctx.Param("id")
+
+	comment, err := h.commentService.GetComment(commentId)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comment)
+}
+
 // GetCommentsByArticle @Summary Get comments by article
 // @Description Get all comments on an article
 // @Tags comments
@@ -114,4 +142,46 @@ func (h *CommentHandler) DeleteComment(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
+}
+
+// UpdateComment @Summary Update a comment
+// @Description Update a comment by its ID, only the owner or admin can update
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Comment ID"
+// @Param request body dto.UpdateCommentRequest true "Comment details"
+// @Success 200 {object} model.Comment
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /comments/{id} [put]
+func (h *CommentHandler) UpdateComment(ctx *gin.Context) {
+	var req dto.UpdateCommentRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	commentId := ctx.Param("id")
+	user := ctx.MustGet("user").(*model.User)
+
+	comment, err := h.commentService.UpdateComment(user, commentId, &req)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comment)
 }

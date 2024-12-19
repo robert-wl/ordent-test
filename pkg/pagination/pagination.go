@@ -16,7 +16,7 @@ func (p *Pagination) Paginate() func(db *gorm.DB) *gorm.DB {
 }
 
 func (p *Pagination) GetPage() int {
-	if p.Page == nil {
+	if p.Page == nil || *p.Page < 1 {
 		return 1
 	}
 
@@ -24,7 +24,7 @@ func (p *Pagination) GetPage() int {
 }
 
 func (p *Pagination) GetLimit() int {
-	if p.Limit == nil {
+	if p.Limit == nil || *p.Limit < 1 {
 		return 5
 	}
 

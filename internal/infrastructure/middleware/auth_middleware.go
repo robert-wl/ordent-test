@@ -3,33 +3,37 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"ordent-test/pkg/auth"
+	"ordent-test/pkg/utils"
 	"strings"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if strings.Contains(ctx.Request.URL.Path, "auth") {
+		header := ctx.GetHeader("Authorization")
+
+		if header == "" {
 			ctx.Next()
 			return
 		}
 
-		header := ctx.GetHeader("Authorization")
-		if !strings.Contains(header, "Bearer") {
-			ctx.AbortWithStatusJSON(401, gin.H{"message": "Unauthorized"})
-			return
-		}
+		header = strings.Replace(header, "Bearer ", "", 1)
 
 		token := strings.Replace(header, "Bearer ", "", 1)
 
 		user, err := auth.ParseJWT(token)
 
 		if err != nil {
-			ctx.AbortWithStatusJSON(401, gin.H{"message": "Unauthorized"})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.NewErrorResponse(
+				"Unauthorized",
+				http.StatusUnauthorized,
+				"Invalid token",
+			))
 			return
 		}
 
-		fmt.Println("hahahaH", user)
+		fmt.Println(user)
 		ctx.Set("user", user)
 	}
 }

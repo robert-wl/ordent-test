@@ -48,6 +48,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		articles.Use(authMiddleware)
 		{
 			articles.POST("", articleHandler.CreateArticle)
+			articles.PUT("/:id", articleHandler.UpdateArticle)
+			//articles.DELETE("/:id", articleHandler.DeleteArticle)
 		}
 	}
 

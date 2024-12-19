@@ -38,6 +38,16 @@ definitions:
     - password
     - username
     type: object
+  dto.UpdateArticleRequest:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
   model.Article:
     properties:
       body:
@@ -103,6 +113,38 @@ paths:
       responses:
         "201":
           description: Created
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - articles
+  /articles/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an article with the provided data
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Article data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/model.Article'
         "400":

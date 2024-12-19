@@ -60,3 +60,47 @@ func (h *ArticleHandler) CreateArticle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, article)
 }
+
+// UpdateArticle @Summary Update an article
+// @Description Update an article with the provided data
+// @Tags articles
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Article ID"
+// @Param request body dto.UpdateArticleRequest true "Article data"
+// @Success 200 {object} model.Article
+// @Failure 400 {object} utils.ErrorResponse
+// @Router /articles/{id} [put]
+func (h *ArticleHandler) UpdateArticle(ctx *gin.Context) {
+	var req dto.UpdateArticleRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
+		)
+		return
+	}
+
+	articleId := ctx.Param("id")
+	user := ctx.MustGet("user").(*model.User)
+
+	article, err := h.articleService.UpdateArticle(user, articleId, &req)
+
+	if err != nil {
+		ctx.JSON(
+			http.StatusBadRequest,
+			utils.NewErrorResponse(
+				"Bad Request",
+				http.StatusBadRequest,
+				err.Error()),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, article)
+}

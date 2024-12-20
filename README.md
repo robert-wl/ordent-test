@@ -1,6 +1,6 @@
 # Artikel Online - Backend
 
-## Deskrpsi
+## Deskripsi
 Backend yang dibuat adalah backend untuk platform Artikel Online, dibuat menggunakan Go dan framework Gin.
 
 ## Tools dan Package
@@ -11,6 +11,23 @@ Backend yang dibuat adalah backend untuk platform Artikel Online, dibuat menggun
 5. JWT (Authentication)
 6. Swagger (API Documentation)
 7. Docker (Container)
+
+## Cara Menjalankan Aplikasi
+
+Sebelum menjalankan aplikasi, pastikan sudah menginstall Go dan PostgreSQL.
+Copy `.env.example` menjadi `.env` dan sesuaikan dengan konfigurasi yang ada.
+
+Script untuk menjalankan dan mendevelop aplikasi ini ada didalam file `Makefile`.
+1. `make run` - Menjalankan aplikasi dengan live reload
+2. `make swagger` - Mengupdate JSON swagger
+3. `make test` - Menjalankan unit testing (hanya beberapa)
+
+Tanpa menggunakan Makefile, berikut adalah cara menjalankan aplikasi:
+`go run ./cmd/app/main.go`
+
+Untuk menggunakan `docker`, berikut adalah cara menjalankan aplikasi:
+`docker compose up --build`
+
 
 ## Fitur
 Berikut adalah fitur yang ada pada aplikasi ini, (catatan, semua endpoint memiliki baseUrl `/api/v1`):
@@ -54,6 +71,7 @@ Berikut adalah fitur yang ada pada aplikasi ini, (catatan, semua endpoint memili
 | Create Comment        | POST   | `/comments`               | ✅                   | Untuk membuat sebuah komentar baru                                                                         |
 | Update Comment        | PUT    | `/articles/{id}`          | ✅ `admin` `creator` | Untuk mengubah sebuah komentar                                                                             |
 | Delete Comment        | DELETE | `/articles/{id}`          | ✅ `admin` `creator` | Untuk menghapus sebuah komentar                                                                            |
+
 
 ## Database
 

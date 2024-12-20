@@ -7,3 +7,7 @@ run:
 
 swagger:
 	swag init -g .\cmd\app\main.go
+
+
+test:
+	go test -v ./pkg/pagination

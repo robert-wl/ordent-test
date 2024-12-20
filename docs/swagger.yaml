@@ -120,6 +120,21 @@ definitions:
       username:
         type: string
     type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      secure_id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
   utils.ErrorResponse:
     properties:
       error:
@@ -344,6 +359,28 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      tags:
+      - authentication
+  /auth/me:
+    get:
+      consumes:
+      - application/json
+      description: Get the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
       tags:
       - authentication
   /auth/me:
@@ -387,6 +424,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
       tags:
       - authentication
   /comments:
